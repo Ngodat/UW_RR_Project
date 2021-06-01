@@ -1,0 +1,71 @@
+---
+title: "Reproducible Research_Gender Bias in Employment Decision Making"
+author: "Dat Ngo"
+date: "5/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# 1. Introduction
+Reducing gender bias at work critical to nurture and motivate a healthy and dynamic workplace. There are many papers that research the effects and mechanism of this bias. In this paper, we reproduced the meta-analysis <i><b>"A Meta-Analysis of Gender Stereotypes and Bias in Experimental Simulations of Employment Decision Making", Amanda J. Koch and Susan D. D’Mello, 2015</b></i>. The purpose of the reproducing paper is to understand this type of bias and verify whether the meta-analysis's findings are still effective.
+
+In this paper, we collected 5 other papers about gender bias  in employment decision, calculated Cohen's d values and combine with re-coding values from 10 papers from 136 samples in the meta-analysis to identify effect sizes. 
+
+# 2. Hypothesis
+
+The original meta-analysis tested 6 hypothesis. However, in the scope of the project, we tested 2 hypothesis as below:
+<ul>
+<li>Hypothesis 1. Gender-role congruity bias will be found, with men being rated more favorably than women for male-dominated jobs and women being rated more favorably than men for female-dominated jobs.</li>
+<li>Hypothesis 2. Male raters will exhibit stronger gender-role congruity bias than female raters.</li>
+</ul>
+
+# 3. Datasets
+Followings are criteria used to select papers in the original meta-analysis. We applied these criteria in searching additional papers:<br>
+
+- First, the studies had to be experimental. Most studies were simulations of employment contexts, with the typical paradigm being the evaluation of résumés that were identical or very similar other than the gender of the applicants.<br>
+- Second, studies had to include job-related ratings about a ratee (e.g., hireability, salary, competence, promotion).<br>
+- Third, studies had to provide enough data to allow for the computation of Cohen’s d (e.g., means, standard deviations, and sample sizes for repeated-measures or independent groups designs; correlations or t values for independent group designs).<br>
+- Fourth, studies were excluded if their samples consisted of participants from non-normal populations (e.g., prisoners).<br>
+
+For the list of papers selected, please refer to the <b>appendix A</b>.
+
+# 4. Results and findings
+
+
+```{r include=  F}
+library(dplyr)
+load('research_Data.RData')
+summary_sexDistribution <- data  %>% group_by(Sex.distribution) %>% summarise(
+                                    no_papers = n(), total_sample = sum(n)
+                                    ,mean_d = round(weighted.mean(d,n),4),SD = round(sd(d),4)
+                                    ,CI_90_percent_Lower = round(weighted.mean(d,n) - 1.645*sd(d)/sqrt(sum(n)),4)
+                                    ,CI_90_percent_Upper = round(weighted.mean(d,n) + 1.645*sd(d)/sqrt(sum(n)),4)
+                                                   )
+
+summary_raterGender <- data %>% group_by(Rater.Gender) %>% summarise(
+                                no_papers = n(), total_sample = sum(n)
+                                ,mean_d = round(weighted.mean(d,n),4),SD = round(sd(d),4)
+                                ,CI_90_percent_Lower = round(weighted.mean(d,n) - 1.645*sd(d)/sqrt(sum(n)),4)
+                                ,CI_90_percent_Upper = round(weighted.mean(d,n) + 1.645*sd(d)/sqrt(sum(n)),4)
+) 
+
+
+```
+
+```{r echo = FALSE, results= 'asis'}
+library('knitr')
+kable(summary_sexDistribution, caption = 'Size effects by Job type')
+```
+
+```{r echo = FALSE, results= 'asis'}
+library('knitr')
+kable(summary_raterGender, caption = 'Size effects by Rater Gender')
+```
+
+
+
+
+
