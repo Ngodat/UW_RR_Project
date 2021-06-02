@@ -18,9 +18,9 @@ In this project, we test 2 hyotheses used the orginal analysis:
 * Hypothesis 2. Male raters will exhibit stronger gender-role congruity bias than female raters.
 
 ## List of files in this repo:
-A Meta-Analysis of Gender Stereotypes and Bias in Experimental.pdf: The original meta-analysis
-Final_Project.Rmd: RMarkdown script for the project
-Final_Project.html: The project report in HTML format
-references.bib: List of papers used in the project
-research_Data.RData: The data coded from selected papers
+* A Meta-Analysis of Gender Stereotypes and Bias in Experimental.pdf: The original meta-analysis
+* Final_Project.Rmd: RMarkdown script for the project
+* Final_Project.html: The project report in HTML format
+* references.bib: List of papers used in the project
+* research_Data.RData: The data coded from selected papers
 
