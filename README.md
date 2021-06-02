@@ -9,14 +9,18 @@ The original dataset includes 136 studies. Studies' results such as Rater Gender
 
 ## Report structure
 * 1. Back ground and hypotheses to test 
-* 2. Reproduce the meta-analysis using a subset of data
-* 3. Replicate the meta-anlysis method on 5 new datasets
-* 4. Compare the results and conlusions
+* 2. Reproduce the meta-analysis using a subset of data and 4 new datasets
+* 3. Compare the results and conlusions
 
 ## Hypotheses
 In this project, we test 2 hyotheses used the orginal analysis:
 * Hypothesis 1. Gender-role congruity bias will be found, with men being rated more favorably than women for maledominated jobs and women being rated more favorably than men for female-dominated jobs.
 * Hypothesis 2. Male raters will exhibit stronger gender-role congruity bias than female raters.
 
-
+## List of files in this repo:
+A Meta-Analysis of Gender Stereotypes and Bias in Experimental.pdf: The original meta-analysis
+Final_Project.Rmd: RMarkdown script for the project
+Final_Project.html: The project report in HTML format
+references.bib: List of papers used in the project
+research_Data.RData: The data coded from selected papers
 
