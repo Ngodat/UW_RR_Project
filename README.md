@@ -1,4 +1,4 @@
-# Project title: Gender Stereotypes and Bias in Experimental Simulations of Employment Decision Making - reproducing the meta-analysis study
+# Project title: Reproducible Research_Gender Bias in Employment Decision Making
 ## Project idea
 In this project, we replicate a meta-analysis regarding gender bias at work. The original meta-analysis examined the effects of decision-maker gender, amount and content of available information, type of evaluation, and motivation to make careful decisions on gender bias at work, using 136 studies. 
 
