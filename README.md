@@ -14,9 +14,9 @@ The original dataset includes 136 studies. Studies' results such as Rater Gender
 * 4. Compare the results and conlusions
 
 ## Hypotheses
-In this project, we test 3 hyotheses used the orginal analysis:
+In this project, we test 2 hyotheses used the orginal analysis:
 * Hypothesis 1. Gender-role congruity bias will be found, with men being rated more favorably than women for maledominated jobs and women being rated more favorably than men for female-dominated jobs.
 * Hypothesis 2. Male raters will exhibit stronger gender-role congruity bias than female raters.
-* Hypothesis 3. As more job-relevant information becomes available, gender-role congruity bias will decrease
+
 
 
