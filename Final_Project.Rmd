@@ -2,19 +2,25 @@
 title: "Reproducible Research_Gender Bias in Employment Decision Making"
 author: "Dat Ngo"
 date: "5/25/2021"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+bibliography: references.bib
+nocite: '@*'
+
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# 1. Introduction
+## 1. Introduction
 Reducing gender bias at work critical to nurture and motivate a healthy and dynamic workplace. There are many papers that research the effects and mechanism of this bias. In this paper, we reproduced the meta-analysis <i><b>"A Meta-Analysis of Gender Stereotypes and Bias in Experimental Simulations of Employment Decision Making", Amanda J. Koch and Susan D. D’Mello, 2015</b></i>. The purpose of the reproducing paper is to understand this type of bias and verify whether the meta-analysis's findings are still effective.
 
 In this paper, we collected 5 other papers about gender bias  in employment decision, calculated Cohen's d values and combine with re-coding values from 10 papers from 136 samples in the meta-analysis to identify effect sizes. 
 
-# 2. Hypothesis
+## 2. Hypothesis
 
 The original meta-analysis tested 6 hypothesis. However, in the scope of the project, we tested 2 hypothesis as below:
 <ul>
@@ -22,7 +28,8 @@ The original meta-analysis tested 6 hypothesis. However, in the scope of the pro
 <li>Hypothesis 2. Male raters will exhibit stronger gender-role congruity bias than female raters.</li>
 </ul>
 
-# 3. Datasets
+## 3. Datasets and method
+### 3.1. Datasets
 Followings are criteria used to select papers in the original meta-analysis. We applied these criteria in searching additional papers:<br>
 
 - First, the studies had to be experimental. Most studies were simulations of employment contexts, with the typical paradigm being the evaluation of résumés that were identical or very similar other than the gender of the applicants.<br>
@@ -30,14 +37,67 @@ Followings are criteria used to select papers in the original meta-analysis. We 
 - Third, studies had to provide enough data to allow for the computation of Cohen’s d (e.g., means, standard deviations, and sample sizes for repeated-measures or independent groups designs; correlations or t values for independent group designs).<br>
 - Fourth, studies were excluded if their samples consisted of participants from non-normal populations (e.g., prisoners).<br>
 
-For the list of papers selected, please refer to the <b>appendix A</b>.
+### 3.2. Method
+#### a. Literature search
+Regarding new papers, we searched several online databases (Google Scholar, Springer ,Sciencedirect, Researchgate, JSTOR) using combinations of the following key words: <i> gender bias, gender stereotypes, sex discrimination, job application, employment discrimination, hiring decision </i>. Regarding papers from the original meta-analysis, we collects randomly 10 ones published from 2003 to 2015. The list of papers included could be seen in the <b>appendix 1, new papers we added have a star (*) before the reference </b>.<br>
 
-# 4. Results and findings
+#### b. Coding
+We followed the coding guidance from the original paper:<br>
 
+- Sex distribution within job: Each job used in a study was coded as male-dominated, female-dominated, or integrated based on the proportion of men and women who held that job in the country and during the time period in which the study was conducted. <br>
 
-```{r include=  F}
-library(dplyr)
+- Rater gender: When possible, we coded d values for male and female rater groups. In cases where separate d values were not provided by rater gender, the sample was labeled as mixed/not specified and was not included in rater gender moderator analyses. <br>
+
+- Individuating information: The amount of individuating information was coded as the number of pieces of information
+provided to a decision maker, with the categories of pieces of information being résumé or job application, recommendation letter, videotape or transcript of interview, work sample or simulation, and performance appraisal. <br>
+
+- Type of evaluation: We coded two moderators related to the type of evaluation: type of comparison and type of employment rating. Type of comparison was coded as comparative or individual.Types of employment ratings were hiring, promotion, compensation, reward. <br>
+
+- Motivation to make careful decisions: We coded each study for contextual variables that would increase participants’ motivation to make careful decisions <br>
+
+- Type of participant: The type of participant was coded as undergraduate, working adult, or experienced professional. Experienced professional samples consisted of people with experience relevant to the decision-making task in the study. <br>
+
+## 4. Results and findings
+### 4.1. Meta-analysis results
+We calculated confidence interval of size effect and evaluate the random effects model using R's meta library
+```{r, include=  F}
+library('meta')
+library('dplyr')
 load('research_Data.RData')
+```
+
+```{r, echo=  F}
+m.raw <- metacont(n.e= N_Male,
+                  mean.e= M_Male,
+                  sd.e= SD_Male,
+                  n.c= N_Female,
+                  mean.c= M_Female,
+                  sd.c = SD_Female,
+                  data=data,
+                  studlab=paste(Author..year.),
+                  comb.fixed = TRUE,
+                  comb.random = TRUE,
+                  method.smd = 'Cohen'
+)
+m.raw
+```
+The output shows that our estimated effect is  MD = 0.0169 with the 95% confidence interval stretches from -0.1280 to 0.1619. However, the p-value of random effects model is greater than 5%. <b>We cannot conclude a significant size effect of gender bias based on the selected researches.</b>
+
+<i><b>Depicting size effects</b></i>
+```{r echo = F}
+m.raw %>% forest(sortvar = TE, just="right")
+```
+
+```{r, echo = F}
+m.raw %>% funnel(xlab = "MD",studlab = TRUE)
+```
+<br>
+<b><i>In the funnel plot, selected samples are fairly symmetric, however, there are some samples out of the plot.</i></b>
+
+### 4.2. Comparison to the original paper's results
+We calculated the weighted average size effect based on sample size to compare the project results with the original paper.
+```{r include=  F}
+
 summary_sexDistribution <- data  %>% group_by(Sex.distribution) %>% summarise(
                                     no_papers = n(), total_sample = sum(n)
                                     ,mean_d = round(weighted.mean(d,n),4),SD = round(sd(d),4)
@@ -49,21 +109,63 @@ summary_raterGender <- data %>% group_by(Rater.Gender) %>% summarise(
                                 no_papers = n(), total_sample = sum(n)
                                 ,mean_d = round(weighted.mean(d,n),4),SD = round(sd(d),4)
                                 ,CI_90_percent_Lower = round(weighted.mean(d,n) - 1.645*sd(d)/sqrt(sum(n)),4)
-                                ,CI_90_percent_Upper = round(weighted.mean(d,n) + 1.645*sd(d)/sqrt(sum(n)),4)
-) 
-
-
+                                ,CI_90_percent_Upper = round(weighted.mean(d,n) + 1.645*sd(d)/sqrt(sum(n)),4))
 ```
 
-```{r echo = FALSE, results= 'asis'}
+
+```{r, echo = F}
+library(ggplot2)
+library(grid)
+grob <- grobTree(textGrob("Original Papers' average d value", x=0.1,  y=0.6, hjust=0,
+  gp=gpar(col="red", fontsize=11, fontface="italic")))
+
+grob2 <- grobTree(textGrob("Selected Papers' average d value", x=0.1,  y=0.45, hjust=0,
+  gp=gpar(col="blue", fontsize=11, fontface="italic")))
+
+plotchart <- ggplot(data=data, aes(x=Author..year., y=d)) + 
+  geom_point()+
+  theme_bw() + 
+  theme(plot.title = element_text(hjust = 0.08), axis.text.x = element_text(angle = 0,colour = 'black',size = 4)) +
+  geom_hline(yintercept=.08, linetype="dashed", color = "red") +
+  geom_hline(yintercept= sum(data$d*data$n)/sum(data$n), linetype="dashed", color = "blue") +
+  annotation_custom(grob) + 
+  annotation_custom(grob2)
+
+plotchart
+
+```
+<br>
+In general, the weighed average Cohen's d value from selected papers was lower than the original one. This indicates a less gender bias random effects from selected papers compared to the original paper. <br>
+
+Besides, the weighed Cohen's d value from selected paper was less than 0.2. This means there is a very small effect size from selected researches.
+
+```{r echo = F, results= 'asis'}
 library('knitr')
 kable(summary_sexDistribution, caption = 'Size effects by Job type')
 ```
+We can see a Cohen's d value greater than 0.2 in the group of paper researching male-dominated jobs. This is the same as the <b>Hypothesis 1</b> that men being rated more favorably than women for male-dominated jobs. 
 
-```{r echo = FALSE, results= 'asis'}
+However, because of the lack in selected papers, we cannot see women being rated more favorably than men for female-dominated jobs.
+
+```{r echo = F, results= 'asis'}
 library('knitr')
 kable(summary_raterGender, caption = 'Size effects by Rater Gender')
 ```
+
+On the selected researches, male raters have a negative average d value, which means they rated female applicants higher than male applicants. 
+
+Due to the lack of paper whose raters are female, we cannot conclude the <b>Hypothesis 2</b> male raters are more gender-role congruity bias than women raters.
+
+
+## 5. Conclusion
+The result from project is not like the original paper due to the following reasons:
+- The small number of papers collected compared to the original one
+- The collected researches' participants are different from the original one
+
+To improve the quality of the meta-analysis, the team should investigate more researches related to gender bias not only in recruitment but also in person evaluation and promotion, penalty.
+
+## Appendix 1: List of papers included in the meta-analysis
+(papers we added have a star (*) before the reference)
 
 
 
